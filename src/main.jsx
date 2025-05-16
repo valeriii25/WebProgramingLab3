@@ -12,6 +12,7 @@ import {
     CategoryScale,
     Tooltip,
     Legend,
+    Filler,
 } from 'chart.js';
 
 ChartJS.register(
@@ -22,7 +23,8 @@ ChartJS.register(
     Title,
     CategoryScale,
     Tooltip,
-    Legend
+    Legend,
+    Filler
 );
 
 ReactDOM.createRoot(document.getElementById('root')).render(

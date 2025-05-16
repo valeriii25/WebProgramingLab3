@@ -1,19 +1,19 @@
 ﻿import React, { useState, useEffect } from 'react';
-import { useAppContext } from '../contexts/AppContext';
 import { useFrankfurterAPI } from '../hooks/useFrankfurterAPI';
 import CurrencySelect from './CurrencySelect';
+import {useAppContext} from "../hooks/useAppContext.js";
 
 function CurrencyConverterForm() {
     const {
         currencies,
-        fromCurrency, // Будет установлен AppContext'ом после загрузки currencies
+        fromCurrency,
         setFromCurrency,
-        toCurrency,   // Будет установлен AppContext'om
+        toCurrency,
         setToCurrency,
         conversionResult,
         updateConversionResult,
         updateLastRateForReverse,
-        isCurrenciesLoading, // Используем это для блокировки формы
+        isCurrenciesLoading,
         currenciesError,
     } = useAppContext();
 
@@ -23,14 +23,13 @@ function CurrencyConverterForm() {
 
     const { isLoading: isConverting, error: conversionApiError, fetchConversionRate } = useFrankfurterAPI();
 
-    // Эффект для сброса состояния при смене валют извне (например, из AppContext)
-    // или при первоначальной загрузке, когда fromCurrency/toCurrency еще могут быть не установлены
     useEffect(() => {
-        updateLastRateForReverse(null);
-        updateConversionResult('');
-        setFormError('');
-        setCurrentConversionMessage('');
-    }, [fromCurrency, toCurrency, updateLastRateForReverse, updateConversionResult]);
+        if (conversionResult === '') {
+            setFormError('');
+            setCurrentConversionMessage('');
+        }
+    }, [conversionResult]);
+
 
     useEffect(() => {
         if(conversionApiError) {
@@ -41,9 +40,6 @@ function CurrencyConverterForm() {
     }, [conversionApiError, setFormError, updateConversionResult]);
 
     const handleSubmit = async (e) => {
-        // ... (логика handleSubmit остается почти такой же) ...
-        // Важно, что isCurrenciesLoading уже должно быть false здесь
-        // и fromCurrency/toCurrency должны быть валидными
         e.preventDefault();
         setFormError('');
         updateConversionResult('');
@@ -53,7 +49,6 @@ function CurrencyConverterForm() {
             setFormError('Please enter a valid positive amount.');
             return;
         }
-        // Проверка, что fromCurrency и toCurrency выбраны
         if (!fromCurrency || !toCurrency) {
             setFormError('Please select both "From" and "To" currencies.');
             return;
@@ -62,12 +57,6 @@ function CurrencyConverterForm() {
             setFormError('Please select different currencies.');
             return;
         }
-
-        // Эта проверка может быть уже избыточной, если AppContent блокирует рендер
-        // if (isCurrenciesLoading) {
-        //   setFormError('Currencies are still loading. Please wait.');
-        //   return;
-        // }
         if (currenciesError) {
             setFormError(`Cannot convert due to currency load error: ${currenciesError}`);
             return;
@@ -78,15 +67,12 @@ function CurrencyConverterForm() {
             const convertedValue = await fetchConversionRate(fromCurrency, toCurrency, numAmount);
             const rate = convertedValue / numAmount;
 
-            const formattedAmount = new Intl.NumberFormat(undefined, { style: 'decimal', minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(numAmount);
-            const formattedConverted = new Intl.NumberFormat(undefined, { style: 'decimal', minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(convertedValue);
-
-            updateConversionResult(`${formattedAmount} ${fromCurrency} = ${formattedConverted} ${toCurrency}`);
+            updateConversionResult(`${numAmount} ${fromCurrency} = ${convertedValue} ${toCurrency}`);
             updateLastRateForReverse(rate);
             setCurrentConversionMessage('');
         } catch (err) {
             setCurrentConversionMessage('');
-            if (!conversionApiError) { // Если хук не установил ошибку
+            if (!conversionApiError) {
                 setFormError(`Conversion failed: ${err.message}`);
             }
             updateConversionResult('');
@@ -94,7 +80,6 @@ function CurrencyConverterForm() {
         }
     };
 
-    // Блокируем всю форму, если основные валюты еще не загружены или есть ошибка их загрузки
     const formDisabled = isCurrenciesLoading || !!currenciesError || !fromCurrency || !toCurrency;
 
 
@@ -108,7 +93,7 @@ function CurrencyConverterForm() {
                     <CurrencySelect
                         label="From"
                         id="from-currency"
-                        value={fromCurrency} // Теперь fromCurrency будет установлен AppContext'ом
+                        value={fromCurrency}
                         onChange={(e) => setFromCurrency(e.target.value)}
                         currencies={currencies}
                         disabled={formDisabled}
@@ -116,7 +101,7 @@ function CurrencyConverterForm() {
                     <CurrencySelect
                         label="To"
                         id="to-currency"
-                        value={toCurrency} // Теперь toCurrency будет установлен AppContext'ом
+                        value={toCurrency}
                         onChange={(e) => setToCurrency(e.target.value)}
                         currencies={currencies}
                         disabled={formDisabled}
@@ -139,7 +124,6 @@ function CurrencyConverterForm() {
                     </button>
                 </form>
             )}
-            {/* ... (отображение сообщений formError, currentConversionMessage, conversionResult) ... */}
             {formError && <p className="conversion-output error-message">{formError}</p>}
             {!formError && currentConversionMessage && <p className="conversion-output">{currentConversionMessage}</p>}
             {!formError && !currentConversionMessage && conversionResult && (

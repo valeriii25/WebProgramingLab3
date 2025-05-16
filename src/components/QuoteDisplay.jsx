@@ -20,7 +20,7 @@ function QuoteDisplay() {
                 const idx = Math.floor(Math.random() * quotes.length);
                 setCurrentQuote(quotes[idx]);
                 setIsFading(false);
-            }, 500); // Half of CSS transition duration
+            }, 500);
         };
 
         const intervalId = setInterval(changeQuote, 10000);

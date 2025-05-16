@@ -1,54 +1,7 @@
-﻿// import React, { useState, useEffect } from 'react';
-// import { useFrankfurterAPI } from '../hooks/useFrankfurterAPI';
-//
-// const popularPairs = [
-//     ['EUR', 'USD'],
-//     ['USD', 'JPY'],
-//     ['GBP', 'EUR'],
-//     ['USD', 'CAD'],
-// ];
-//
-// function PopularRatesDisplay() {
-//     const [rates, setRates] = useState([]);
-//     const { isLoading, error, fetchPopularRates } = useFrankfurterAPI();
-//
-//     useEffect(() => {
-//         const loadRates = async () => {
-//             try {
-//                 const fetchedRates = await fetchPopularRates(popularPairs);
-//                 setRates(fetchedRates);
-//             } catch (err) {
-//                 // Error is handled by the hook's error state
-//                 console.error("Popular rates fetch error in component:", err)
-//             }
-//         };
-//         loadRates();
-//     }, [fetchPopularRates]);
-//
-//     return (
-//         <div className="popular-rates">
-//             <h2>Popular Rates</h2>
-//             {isLoading && <p>Loading popular rates...</p>}
-//             {error && !isLoading && <p>Error loading popular rates: {error}</p>}
-//             {!isLoading && !error && rates.length > 0 && (
-//                 <div className="rates-table">
-//                     {rates.map(({ pair, rate }) => (
-//                         <div key={pair}>
-//                             {pair} = {rate}
-//                         </div>
-//                     ))}
-//                 </div>
-//             )}
-//             {!isLoading && !error && rates.length === 0 && <p>No popular rates to display.</p>}
-//         </div>
-//     );
-// }
-//
-// export default PopularRatesDisplay;
-
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import { useFrankfurterAPI } from '../hooks/useFrankfurterAPI';
-import { useAppContext } from '../contexts/AppContext'; // Импортируем
+
+import {useAppContext} from "../hooks/useAppContext.js";
 
 const popularPairs = [
     ['EUR', 'USD'],
@@ -60,26 +13,19 @@ const popularPairs = [
 function PopularRatesDisplay() {
     const [rates, setRates] = useState([]);
     const { isLoading, error, fetchPopularRates } = useFrankfurterAPI();
-    const { isCurrenciesLoading, currenciesError } = useAppContext(); // Получаем состояние загрузки основных валют
+    const { isCurrenciesLoading, currenciesError } = useAppContext();
 
     useEffect(() => {
-        // Не загружаем популярные курсы, пока основные валюты не загружены
-        if (isCurrenciesLoading || currenciesError) {
-            setRates([]); // Очищаем, если были предыдущие данные
-            return;
-        }
-
         const loadRates = async () => {
             try {
                 const fetchedRates = await fetchPopularRates(popularPairs);
                 setRates(fetchedRates);
             } catch (err) {
                 console.error("Popular rates fetch error in component:", err);
-                // Ошибка также будет в хуке error
             }
         };
         loadRates();
-    }, [fetchPopularRates, isCurrenciesLoading, currenciesError]); // Добавляем зависимости
+    }, [])
 
     return (
         <div className="popular-rates">

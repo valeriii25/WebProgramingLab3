@@ -1,5 +1,5 @@
 ﻿import React, { useState, useEffect } from 'react';
-import { useAppContext } from '../contexts/AppContext';
+import {useAppContext} from "../hooks/useAppContext.js";
 
 function ReverseConverter() {
     const { fromCurrency, toCurrency, lastRateForReverse } = useAppContext();
@@ -9,7 +9,7 @@ function ReverseConverter() {
     useEffect(() => {
         if (!lastRateForReverse) {
             setResultText('Convert currencies first to get rate.');
-            setTargetAmount(''); // Clear input if rate is not available
+            setTargetAmount('');
             return;
         }
 

@@ -1,4 +1,4 @@
-﻿import { useState } from 'react';
+﻿import {useState} from 'react';
 
 const CURRENCY_LIST_URL = 'https://api.frankfurter.dev/v1/currencies';
 const HISTORICAL_BASE_URL = 'https://api.frankfurter.dev/v1/';
@@ -21,8 +21,7 @@ export const useFrankfurterAPI = () => {
         try {
             const res = await fetch(CURRENCY_LIST_URL);
             if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
-            const data = await res.json();
-            return data;
+            return await res.json();
         } catch (err) {
             setError(err.message || "Failed to load currencies.");
             throw err;
@@ -63,12 +62,11 @@ export const useFrankfurterAPI = () => {
                     if (!res.ok) return { pair: `${from}/${to}`, rate: 'Error' };
                     const data = await res.json();
                     return { pair: `${from}/${to}`, rate: data.rates[to].toFixed(4) };
-                } catch (error) {
+                } catch {
                     return { pair: `${from}/${to}`, rate: 'Error' };
                 }
             });
-            const results = await Promise.all(ratePromises);
-            return results;
+            return await Promise.all(ratePromises);
         } catch (err) {
             setError(err.message || "Failed to load popular rates.");
             throw err;
@@ -81,7 +79,7 @@ export const useFrankfurterAPI = () => {
         setIsLoading(true);
         setError(null);
         const endDate = new Date();
-        endDate.setDate(endDate.getDate() - 1); // API often doesn't have "today's" historical data
+        endDate.setDate(endDate.getDate() - 1);
         const startDate = new Date();
         startDate.setDate(endDate.getDate() - 6);
 

@@ -82,6 +82,11 @@ body.dark-theme {
 .form-group {
   display: flex;
   flex-direction: column;
+  align-items: stretch;
+}
+
+.form-group label {
+  margin-right: auto;
 }
 
 .currency-select, .amount-input {
@@ -116,12 +121,6 @@ body.dark-theme {
   margin-bottom: 0;
 }
 
-.footer {
-  text-align: center;
-  margin-top: 2rem;
-  padding: 1rem;
-}
-
 .popular-rates, .historical-chart, .reverse-converter {
   width: 500px;
   padding: 1rem;
@@ -137,21 +136,11 @@ body.dark-theme {
   min-height: 0;
 }
 
-.trend-chart {
-  min-height: 300px;
-  width: 100%;
-  max-width: 100%;
-  display: block;
-  min-height: 0;
-  min-width: 0;
-}
-
 .converter h2,
 .popular-rates h2,
 .historical-chart h2,
 .reverse-converter h2 {
-  margin: 0px;
-  margin-bottom: 1rem;
+  margin: 0 0 1rem;
   font-size: 1.5rem;
   flex-shrink: 0;
   flex-grow: 0;
@@ -206,17 +195,13 @@ body.dark-theme {
   opacity: 0;
 }
 
-
-/* ... (ваш существующий CSS) ... */
-
 .error-message {
-  color: #d9534f; /* Bootstrap danger color for example */
+  color: #d9534f;
   font-size: 0.9rem;
 }
 
-/* Для fade-эффекта цитат (убедитесь, что это соответствует JS) */
 .quote {
-  transition: opacity 0.5s ease-in-out; /* Уменьшил до 0.5s для более быстрой смены */
+  transition: opacity 0.5s ease-in-out;
   opacity: 1;
 }
 
@@ -224,8 +209,7 @@ body.dark-theme {
   opacity: 0;
 }
 
-/* Стили для HistoricalTrendChart контейнера, чтобы он занимал доступное место */
 .historical-chart > div[style*="position: relative"] {
-  flex-grow: 1; /* Позволяет холсту графика растягиваться */
-  min-height: 300px; /* Минимальная высота для графика */
+  flex-grow: 1;
+  min-height: 300px;
 }
